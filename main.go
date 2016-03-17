@@ -2,6 +2,7 @@ package main
 
 import (
     "fmt"
+    "encoding/json"
     "log"
     "net/http"
 
@@ -23,7 +24,12 @@ func Index(writer http.ResponseWriter, request *http.Request) {
 }
 
 func TaskIndex(writer http.ResponseWriter, request *http.Request) {
-    fmt.Fprintf(writer, "Task Index")
+    tasks := Tasks{
+        Task{Name: "Learn Golang"},
+        Task{Name: "Build RESTful API with Golang"},
+    }
+
+    json.NewEncoder(writer).Encode(tasks)
 }
 
 func TaskShow(writer http.ResponseWriter, request *http.Request) {
