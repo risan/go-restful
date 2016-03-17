@@ -18,6 +18,8 @@ func TaskIndex(writer http.ResponseWriter, request *http.Request) {
         Task{Name: "Build RESTful API with Golang"},
     }
 
+    writer.Header().Set("Content-Type", "application/json; charset=UTF-8")
+    writer.WriteHeader(http.StatusOK)
     json.NewEncoder(writer).Encode(tasks)
 }
 
