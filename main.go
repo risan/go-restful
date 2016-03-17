@@ -3,6 +3,7 @@ package main
 import (
     "log"
     "net/http"
+    "os"
     "github.com/joho/godotenv"
 )
 
@@ -15,5 +16,5 @@ func main() {
 
     router := NewRouter()
 
-    log.Fatal(http.ListenAndServe(":8000", router))
+    log.Fatal(http.ListenAndServe(":" + os.Getenv("APP_PORT"), router))
 }
