@@ -1,29 +1,28 @@
 package main
 
 import (
-    "fmt"
-    "encoding/json"
     "net/http"
 
     "github.com/gorilla/mux"
 )
 
 func Index(writer http.ResponseWriter, request *http.Request) {
-    fmt.Fprintf(writer, "Homepage")
+    RespondWithSuccess(writer, "RESTful API with Golang", http.StatusOK)
 }
 
 func TaskIndex(writer http.ResponseWriter, request *http.Request) {
     tasks := Tasks{
-        Task{Name: "Learn Golang"},
-        Task{Name: "Build RESTful API with Golang"},
+        Task{Name: "Learn Golang language"},
+        Task{Name: "Build RESTful API"},
     }
 
-    writer.Header().Set("Content-Type", "application/json; charset=UTF-8")
-    writer.WriteHeader(http.StatusOK)
-    json.NewEncoder(writer).Encode(tasks)
+    RespondWithData(writer, tasks, http.StatusOK)
 }
 
 func TaskShow(writer http.ResponseWriter, request *http.Request) {
     params := mux.Vars(request)
-    fmt.Fprintf(writer, "Task Show:", params["id"])
+
+    task := Task{Name: "Task id: " + params["id"]}
+
+    RespondWithData(writer, task, http.StatusOK)
 }
