@@ -4,6 +4,7 @@ import (
     "net/http"
 
     "github.com/gorilla/mux"
+    "gopkg.in/mgo.v2"
 )
 
 func Index(writer http.ResponseWriter, request *http.Request) {
@@ -11,9 +12,11 @@ func Index(writer http.ResponseWriter, request *http.Request) {
 }
 
 func TaskIndex(writer http.ResponseWriter, request *http.Request) {
-    tasks := Tasks{
-        Task{Name: "Learn Golang language"},
-        Task{Name: "Build RESTful API"},
+    tasks, error := GetAllTasks()
+
+    if error != nil {
+        RespondWithError(writer, "An error has occured.", http.StatusInternalServerError)
+        return
     }
 
     RespondWithData(writer, tasks, http.StatusOK)
@@ -22,7 +25,18 @@ func TaskIndex(writer http.ResponseWriter, request *http.Request) {
 func TaskShow(writer http.ResponseWriter, request *http.Request) {
     params := mux.Vars(request)
 
-    task := Task{Name: "Task id: " + params["id"]}
+    var task Task
+
+    error := FindTaskById(params["id"], &task)
+
+    switch {
+        case error == mgo.ErrNotFound:
+            RespondWithError(writer, "Resource not found.", http.StatusNotFound)
+            return
+        case error != nil:
+            RespondWithError(writer, "An error has occured.", http.StatusInternalServerError)
+            return
+    }
 
     RespondWithData(writer, task, http.StatusOK)
 }
